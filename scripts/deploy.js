@@ -14,18 +14,25 @@ async function main() {
   // await hre.run('compile');
 
   const [deployer] = await ethers.getSigners();
+  const UNISWAP_ROUTER = "0x7a250d5630b4cf539739df2c5dacb4c659f2488d";
 
   console.log("Deploying contracts with the account:", deployer.address);
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   // We get the contract to deploy
-  const Token = await hre.ethers.getContractFactory("Token");
+  const Factory = await hre.ethers.getContractFactory("Factory");
   console.log("Deploying ...");
-  const token = await Token.deploy("Defido", "DEFIDO", "9", "5", "5", "1000000000",
-                                    "0x7a250d5630b4cf539739df2c5dacb4c659f2488d");
-  await token.deployed();
-  console.log("Token deployed to:", token.address);
+  const factory = await Factory.deploy();
+  await factory.deployed();
+  console.log("Factory deployed to:", factory.address);
+
+  const tokenBytecode = await factory.getBytecode("Defido", "DEFIDO", "9", "5", "5", "1000000000", UNISWAP_ROUTER);
+  const tokenAddress = await factory.getAddress(tokenBytecode);
+  console.log('Token to be deployed to:', tokenAddress);
+
+  const deployTransaction = await factory.deploy(tokenBytecode, deployer.address);
+  console.log('Deploy transaction hash:', deployTransaction.hash);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
