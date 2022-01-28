@@ -18,6 +18,16 @@ contract Token is Context, IERC20, Ownable, Pausable {
     using SafeMath for uint256;
     using Address for address;
 
+    // Addresses
+    bool public _enableMarketingAddress;
+    address payable public _marketingAddress;
+    bool public _enableDevelopmentAddress;
+    address payable public _developmentAddress;
+    bool public _enableProductAddress;
+    address payable public _productAddress;
+    bool public _enableCharityAddress;
+    address payable public _charityAddress;
+
     // total token (t-space) supply
     uint256 private _tTotal;
     // total r-space supply (reflections) which is between (MAX - _tTotal) and MAX
@@ -53,6 +63,14 @@ contract Token is Context, IERC20, Ownable, Pausable {
     uint256 public _taxFee;
     uint256 private _previousTaxFee;
 
+    // buy tax fee
+    bool public _enableBuyTaxFee;
+    uint256 public _buyTaxFee;
+
+    // sell tax fee
+    bool public _enableSellTaxFee;
+    uint256 public _sellTaxFee;
+
     // liquidity fee in percentage
     uint256 public _liquidityFee;
     uint256 private _previousLiquidityFee;
@@ -62,12 +80,12 @@ contract Token is Context, IERC20, Ownable, Pausable {
     // uniswap v2 pair contract address
     address public immutable uniswapV2Pair;
 
-    bool inSwapAndLiquify;
-    bool public swapAndLiquifyEnabled = true;
+    bool currentlySwapping;
+    bool public _enableLiquidity = true;
 
     // maximum value for a transaction
     uint256 public _maxTxAmount;
-    uint256 private numTokensSellToAddToLiquidity;
+    uint256 private _tokenSwapThreshold;
     // maximum value a wallet can hold
     uint256 public _maxHoldingAllowed;
 
@@ -76,15 +94,15 @@ contract Token is Context, IERC20, Ownable, Pausable {
     event SwapAndLiquifyEnabledUpdated(bool enabled);
     event SwapAndLiquify(
         uint256 tokensSwapped,
-        uint256 ethReceived,
+        uint256 nativeTokenReceived,
         uint256 tokensIntoLiqudity
     );
 
     // Modifiers
     modifier lockTheSwap() {
-        inSwapAndLiquify = true;
+        currentlySwapping = true;
         _;
-        inSwapAndLiquify = false;
+        currentlySwapping = false;
     }
 
     modifier notBlacklisted(address account) {
@@ -121,7 +139,7 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _tTotal = totalSupply_.mul(10**_decimals);
         _rTotal = (MAX - (MAX % _tTotal));
         _maxTxAmount = (totalSupply_.div(200)).mul(10**_decimals);
-        numTokensSellToAddToLiquidity = (totalSupply_.div(2000)).mul(10**_decimals);
+        _tokenSwapThreshold = (totalSupply_.div(2000)).mul(10**_decimals);
         _maxHoldingAllowed = (totalSupply_.div(20)).mul(10**_decimals);
 
         _rOwned[_msgSender()] = _rTotal;
@@ -188,6 +206,17 @@ contract Token is Context, IERC20, Ownable, Pausable {
     {
         _approve(_msgSender(), spender, amount);
         return true;
+    }
+
+    //Withdraws Native token from the contract
+    function withdrawNative(uint256 amount) public onlyOwner() {
+        if(amount == 0) payable(owner()).transfer(address(this).balance);
+        else payable(owner()).transfer(amount);
+    }
+
+    // Transfers Native token to an address
+    function transferNativeTokenToAddress(address payable recipient, uint256 amount) private {
+        recipient.transfer(amount);
     }
 
     function transferFrom(
@@ -322,6 +351,16 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _taxFee = taxFee;
     }
 
+    function setBuyTaxFeeAndPercent(bool _enabled, uint256 taxFee) external onlyOwner {
+        _enableBuyTaxFee = _enabled;
+        _buyTaxFee = taxFee;
+    }
+
+    function setSellTaxFeeAndPercent(bool _enabled, uint256 taxFee) external onlyOwner {
+        _enableSellTaxFee = _enabled;
+        _sellTaxFee = taxFee;
+    }
+
     function setLiquidityFeePercent(uint256 liquidityFee) external onlyOwner {
         _liquidityFee = liquidityFee;
     }
@@ -337,7 +376,7 @@ contract Token is Context, IERC20, Ownable, Pausable {
     }
 
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner {
-        swapAndLiquifyEnabled = _enabled;
+        _enableLiquidity = _enabled;
         emit SwapAndLiquifyEnabledUpdated(_enabled);
     }
 
@@ -347,6 +386,34 @@ contract Token is Context, IERC20, Ownable, Pausable {
 
     function unpause() external onlyOwner {
         _unpause();
+    }
+
+    function setTokenSwapThreshold(uint256 tokenSwapThreshold) external onlyOwner() {
+        _tokenSwapThreshold = tokenSwapThreshold;
+    }
+
+    function setMarketingAddress(bool _enabled, address marketingAddress) external onlyOwner() {
+        _enableMarketingAddress = _enabled;
+        _marketingAddress = payable(marketingAddress);
+    }
+
+    function setDevelopmentAddress(bool _enabled, address developmentAddress) external onlyOwner() {
+        _enableDevelopmentAddress = _enabled;
+        _developmentAddress = payable(developmentAddress);
+    }
+
+    function setCharityAddress(bool _enabled, address charityAddress) external onlyOwner() {
+        _enableCharityAddress = _enabled;
+        _charityAddress = payable(charityAddress);
+    }
+
+    function setProductAddress(bool _enabled, address productAddress) external onlyOwner() {
+        _enableProductAddress = _enabled;
+        _productAddress = payable(productAddress);
+    }
+
+    function setLiquidity(bool isLiquidity) external onlyOwner() {
+        _enableLiquidity = isLiquidity;
     }
 
     //to recieve ETH from uniswapV2Router when swaping
@@ -503,6 +570,16 @@ contract Token is Context, IERC20, Ownable, Pausable {
         emit Approval(owner, spender, amount);
     }
 
+    // Transfer to pair from non-router address is a sell swap
+    function _isSell(address sender, address recipient) internal view returns (bool) {
+        return sender != address(uniswapV2Router) && recipient == address(uniswapV2Pair);
+    }
+
+    // Transfer from pair is a buy swap
+    function _isBuy(address sender) internal view returns (bool) {
+        return sender == address(uniswapV2Pair);
+    }
+
     // internal transfer function used by transfer and transferFrom
     // checks if contract has been paused
     // checks if sender or recipient is blacklisted
@@ -522,65 +599,95 @@ contract Token is Context, IERC20, Ownable, Pausable {
                 "Transfer amount exceeds the maxTxAmount."
             );
 
-        // is the token balance of this contract address over the min number of
-        // tokens that we need to initiate a swap + liquidity lock?
-        // also, don't get caught in a circular liquidity event.
-        // also, don't swap & liquify if sender is uniswap pair.
+        // Gets the contract token balance for buybacks, charity, liquidity and marketing
         uint256 contractTokenBalance = balanceOf(address(this));
 
         if (contractTokenBalance >= _maxTxAmount) {
             contractTokenBalance = _maxTxAmount;
         }
 
+        // AUTO-LIQUIDITY MECHANISM
+        // Check that the contract token balance has reached the threshold required to execute a swap and liquify event
         bool overMinTokenBalance = contractTokenBalance >=
-            numTokensSellToAddToLiquidity;
+            _tokenSwapThreshold;
+
+        // Check that liquidity feature is enabled
+        // Do not execute the swap and liquify if there is already a swap happening
+        // Do not allow the adding of liquidity if the sender is the Uniswap V2 liquidity pool
         if (
+            _enableLiquidity &&
             overMinTokenBalance &&
-            !inSwapAndLiquify &&
-            from != uniswapV2Pair &&
-            swapAndLiquifyEnabled
+            !currentlySwapping &&
+            from != uniswapV2Pair
         ) {
-            contractTokenBalance = numTokensSellToAddToLiquidity;
+            contractTokenBalance = _tokenSwapThreshold;
             //add liquidity
             swapAndLiquify(contractTokenBalance);
         }
 
         //indicates if fee should be deducted from transfer
-        bool takeFee = true;
-
         //if any account belongs to _isExcludedFromFee account then remove the fee
-        if (_isExcludedFromFee[from] || _isExcludedFromFee[to]) {
-            takeFee = false;
+        bool takeFee = !(_isExcludedFromFee[from] || _isExcludedFromFee[to]);
+
+        if (takeFee && _enableSellTaxFee && _isSell(from, to)) {
+            _previousTaxFee = _taxFee;
+            _taxFee = _sellTaxFee;
+        }
+        if (takeFee && _enableBuyTaxFee && _isBuy(from)) {
+            _previousTaxFee = _taxFee;
+            _taxFee = _buyTaxFee;
         }
 
         //transfer amount, it will take tax, burn, liquidity fee
         _tokenTransfer(from, to, amount, takeFee);
+
+        if (takeFee && _enableSellTaxFee && _isSell(from, to)) {
+            _taxFee = _previousTaxFee;
+        }
+
+        if (takeFee && _enableBuyTaxFee && _isBuy(from)) {
+            _taxFee = _previousTaxFee;
+        }
     }
 
     function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
-        // split the contract balance into halves
-        uint256 half = contractTokenBalance.div(2);
-        uint256 otherHalf = contractTokenBalance.sub(half);
+        // Split the contract balance into the swap portion and the liquidity portion
+        uint256 sixth = contractTokenBalance.div(6); // 1/6 of the tokens, used for liquidity
+        uint256 swapAmount = contractTokenBalance.sub(sixth); // 5/6 of the tokens, used to swap for Native Currency
 
-        // capture the contract's current ETH balance.
-        // this is so that we can capture exactly the amount of ETH that the
-        // swap creates, and not make the liquidity event include any ETH that
+        // capture the contract's current balance.
+        // this is so that we can capture exactly the amount of Native token that the
+        // swap creates, and not make the liquidity event include any Native Token that
         // has been manually sent to the contract
         uint256 initialBalance = address(this).balance;
 
-        // swap tokens for ETH
-        swapTokensForEth(half); // <- this breaks the ETH -> HATE swap when swap+liquify is triggered
+        // swap 5/6 tokens for Native Token
+        swapTokensForNativeToken(swapAmount);
 
-        // how much ETH did we just swap into?
-        uint256 newBalance = address(this).balance.sub(initialBalance);
+        // how much Native token we just swapped into?
+        uint256 recievedTokens = address(this).balance.sub(initialBalance);
+
+        uint256 liquidityTokens = recievedTokens.div(5);
 
         // add liquidity to uniswap
-        addLiquidity(otherHalf, newBalance);
+        addLiquidity(sixth, liquidityTokens);
 
-        emit SwapAndLiquify(half, newBalance, otherHalf);
+        if (_enableMarketingAddress){
+            transferNativeTokenToAddress(_marketingAddress, liquidityTokens);
+        }
+        if (_enableCharityAddress){
+            transferNativeTokenToAddress(_charityAddress, liquidityTokens);
+        }
+        if (_enableProductAddress){
+            transferNativeTokenToAddress(_productAddress, liquidityTokens);
+        }
+        if (_enableDevelopmentAddress){
+            transferNativeTokenToAddress(_developmentAddress, liquidityTokens);
+        }
+        emit SwapAndLiquify(swapAmount, recievedTokens, sixth);
     }
 
-    function swapTokensForEth(uint256 tokenAmount) private {
+    function swapTokensForNativeToken(uint256 tokenAmount) private {
         // generate the uniswap pair path of token -> weth
         address[] memory path = new address[](2);
         path[0] = address(this);
@@ -591,19 +698,19 @@ contract Token is Context, IERC20, Ownable, Pausable {
         // make the swap
         uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(
             tokenAmount,
-            0, // accept any amount of ETH
+            0, // accept any amount of Native Token
             path,
             address(this),
             block.timestamp
         );
     }
 
-    function addLiquidity(uint256 tokenAmount, uint256 ethAmount) private {
+    function addLiquidity(uint256 tokenAmount, uint256 nativeTokenAmount) private {
         // approve token transfer to cover all possible scenarios
         _approve(address(this), address(uniswapV2Router), tokenAmount);
 
         // add the liquidity
-        uniswapV2Router.addLiquidityETH{value: ethAmount}(
+        uniswapV2Router.addLiquidityETH{value: nativeTokenAmount}(
             address(this),
             tokenAmount,
             0, // slippage is unavoidable
