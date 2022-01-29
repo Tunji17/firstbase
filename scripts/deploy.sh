@@ -1,4 +1,5 @@
- #!/bin/bash 
+#!/usr/bin/env bash
+
 echo "All Networks supplied: $@"
 chain_array=($@)
 for i in "${chain_array[@]}"

@@ -28,6 +28,10 @@ contract Token is Context, IERC20, Ownable, Pausable {
     bool public _enableCharityAddress;
     address payable public _charityAddress;
 
+    // Address used to burn a portion of tokens
+    address payable public _burnAddress = payable(0x000000000000000000000000000000000000dEaD);
+
+
     // total token (t-space) supply
     uint256 private _tTotal;
     // total r-space supply (reflections) which is between (MAX - _tTotal) and MAX
@@ -59,7 +63,8 @@ contract Token is Context, IERC20, Ownable, Pausable {
     string private _symbol;
     uint8 private _decimals;
 
-    // tax fee in percentage
+    // tax fee in percentage used for transfers
+    // this value is updated to buy and sell fee and reverted after the transaction
     uint256 public _taxFee;
     uint256 private _previousTaxFee;
 
@@ -88,6 +93,13 @@ contract Token is Context, IERC20, Ownable, Pausable {
     uint256 private _tokenSwapThreshold;
     // maximum value a wallet can hold
     uint256 public _maxHoldingAllowed;
+
+
+    // BUYBACK
+    bool    public _enableBuyback;
+    uint256 public _buybackNativeTokenThreshold; // Native Token required to be inside the contract before a buyback will be performed
+    uint256 public _buybackUpperLimit; // Maximum Token to be bought in any one trade
+    uint256 public _buybackNativeTokenPercentage;  // % of Native token used to buyback tokens
 
     // Events
     event MinTokensBeforeSwapUpdated(uint256 minTokensBeforeSwap);
@@ -365,6 +377,21 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _liquidityFee = liquidityFee;
     }
 
+    function setBuybackEnabled(bool _enabled) external onlyOwner() {
+        _enableBuyback = _enabled;
+    }
+
+    function setBuyback(
+        bool _enabled,
+        uint256 nativeTokenThreshold,
+        uint256 upperLimit,
+        uint256 nativeTokenPercentage) external onlyOwner() {
+        _enableBuyback = _enabled;
+        _buybackNativeTokenThreshold = nativeTokenThreshold;
+        _buybackUpperLimit = upperLimit;
+        _buybackNativeTokenPercentage = nativeTokenPercentage;
+    }
+
     // sets max amount for a single transaction
     function setMaxTxPercent(uint256 maxTxPercent) external onlyOwner {
         _maxTxAmount = _tTotal.mul(maxTxPercent).div(10**2);
@@ -625,6 +652,23 @@ contract Token is Context, IERC20, Ownable, Pausable {
             swapAndLiquify(contractTokenBalance);
         }
 
+        // BUYBACK MECHANISM
+        // If buyback is enabled, and someone is sending tokens to the liquidity pool (i.e. a sell), then we buy back tokens.
+        // Do not execute the buyback if there is already a swap happening
+        if (_enableBuyback && !currentlySwapping && _isSell(from, to)) {
+	        uint256 balance = address(this).balance;
+
+	        // Only execute a buyback when the contract has more than _buybackNativeTokenThreshold
+            if (balance > _buybackNativeTokenThreshold) {
+                if (balance >= _buybackUpperLimit) {
+                    balance = _buybackUpperLimit;
+                }
+
+                // Buy back tokens with % of the Native token inside the contract
+                buyBackTokens(balance.mul(_buybackNativeTokenPercentage).div(100));
+            }
+        }
+
         //indicates if fee should be deducted from transfer
         //if any account belongs to _isExcludedFromFee account then remove the fee
         bool takeFee = !(_isExcludedFromFee[from] || _isExcludedFromFee[to]);
@@ -648,6 +692,28 @@ contract Token is Context, IERC20, Ownable, Pausable {
         if (takeFee && _enableBuyTaxFee && _isBuy(from)) {
             _taxFee = _previousTaxFee;
         }
+    }
+
+    // Buys tokens using the contract balance
+    function buyBackTokens(uint256 amount) private lockTheSwap {
+    	if (amount > 0) {
+    	    swapNativeTokenForTokens(amount);
+	    }
+    }
+
+    // Swaps Native Token for tokens and immedietely burns them
+    function swapNativeTokenForTokens(uint256 amount) private {
+        // generate the uniswap pair path of token -> weth
+        address[] memory path = new address[](2);
+        path[0] = uniswapV2Router.WETH();
+        path[1] = address(this);
+
+        uniswapV2Router.swapExactETHForTokensSupportingFeeOnTransferTokens{value: amount}(
+            0, // Accept any amount of Token
+            path,
+            _burnAddress, // Burn address
+            block.timestamp.add(300)
+        );
     }
 
     function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
