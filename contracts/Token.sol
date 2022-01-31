@@ -34,7 +34,7 @@ contract Token is Context, IERC20, Ownable, Pausable {
 
     // total token (t-space) supply
     uint256 private _tTotal;
-    // total r-space supply (reflections) which is between (MAX - _tTotal) and MAX
+    // total r-space supply (reflections) which is between (MAX.sub(_tTotal)) and MAX
     uint256 private _rTotal;
 
     // total token owned in t-space
@@ -91,6 +91,7 @@ contract Token is Context, IERC20, Ownable, Pausable {
     // maximum value for a transaction
     uint256 public _maxTxAmount;
     uint256 private _tokenSwapThreshold;
+
     // maximum value a wallet can hold
     uint256 public _maxHoldingAllowed;
 
@@ -156,7 +157,7 @@ contract Token is Context, IERC20, Ownable, Pausable {
 
         _rOwned[_msgSender()] = _rTotal;
 
-        // set uniswap router contract
+        // sets uniswap router contract
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(_router);
         // Create a uniswap pair for this new token
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
@@ -171,6 +172,8 @@ contract Token is Context, IERC20, Ownable, Pausable {
 
         emit Transfer(address(0), _msgSender(), _tTotal);
     }
+
+    // Functions
 
     function name() public view returns (string memory) {
         return _name;
@@ -188,11 +191,17 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return _tTotal;
     }
 
+    /**
+     * @notice checks the balance of an account
+     */
     function balanceOf(address account) public view override returns (uint256) {
         if (_isExcluded[account]) return _tOwned[account];
         return tokenFromReflection(_rOwned[account]);
     }
 
+    /**
+     * @notice Used to transfer tokens from caller to recipient
+     */
     function transfer(address recipient, uint256 amount)
         public
         override
@@ -202,6 +211,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return true;
     }
 
+    /**
+     * @notice checks amount of token spender  is allowed to send
+     */
     function allowance(address owner, address spender)
         public
         view
@@ -211,6 +223,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return _allowances[owner][spender];
     }
 
+    /**
+     * @notice approve the passed address to spend the specified amount of tokens on behalf of msg.sender
+     */
     function approve(address spender, uint256 amount)
         public
         override
@@ -220,17 +235,24 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return true;
     }
 
-    //Withdraws Native token from the contract
+    /**
+     * @notice used to withdraws Native token from the contract
+     */
     function withdrawNative(uint256 amount) public onlyOwner() {
         if(amount == 0) payable(owner()).transfer(address(this).balance);
         else payable(owner()).transfer(amount);
     }
 
-    // Transfers Native token to an address
+    /**
+     * @notice used to transfers Native token to an address
+     */
     function transferNativeTokenToAddress(address payable recipient, uint256 amount) private {
         recipient.transfer(amount);
     }
 
+    /**
+     * @notice used by spender to transfer token from sender to recipient
+     */
     function transferFrom(
         address sender,
         address recipient,
@@ -248,6 +270,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return true;
     }
 
+    /**
+     * @notice used to increase allowance given to a spender
+     */
     function increaseAllowance(address spender, uint256 addedValue)
         public
         virtual
@@ -261,6 +286,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return true;
     }
 
+    /**
+     * @notice used to decrease allowance given to a spender
+     */
     function decreaseAllowance(address spender, uint256 subtractedValue)
         public
         virtual
@@ -277,15 +305,23 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return true;
     }
 
+    /**
+     * @notice used to check if an address is excluded from rewards
+     */
     function isExcludedFromReward(address account) public view returns (bool) {
         return _isExcluded[account];
     }
 
+    /**
+     * @notice used to check total fees collected by contract
+     */
     function totalFees() public view returns (uint256) {
         return _tFeeTotal;
     }
 
-    // get gross or net reflection amount when given a transfer amount
+    /**
+     * @notice used to get gross or net reflection amount when given a transfer amount
+     */
     function reflectionFromToken(uint256 tAmount, bool deductTransferFee)
         public
         view
@@ -301,7 +337,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         }
     }
 
-    // get token amount when given a reflection amount
+    /**
+     * @notice used to get token amount when given a reflection amount
+     */
     function tokenFromReflection(uint256 rAmount)
         public
         view
@@ -315,7 +353,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return rAmount.div(currentRate);
     }
 
-    // exclude address from rewards
+    /**
+     * @notice used to exclude address from rewards
+     */
     function excludeFromReward(address account) public onlyOwner {
         require(!_isExcluded[account], "Account is already excluded");
         if (_rOwned[account] > 0) {
@@ -325,7 +365,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _excluded.push(account);
     }
 
-    // include excluded account in rewards
+    /**
+     * @notice used to include excluded account in rewards
+     */
     function includeInReward(address account) external onlyOwner {
         require(_isExcluded[account], "Account is already included");
         for (uint256 i = 0; i < _excluded.length; i++) {
@@ -339,48 +381,81 @@ contract Token is Context, IERC20, Ownable, Pausable {
         }
     }
 
+    /**
+     * @notice used to check if the account is already blacklisted
+     */
     function isBlacklisted(address account) public view returns (bool) {
         return _isBlacklisted[account];
     }
 
+    /**
+     * @notice used to blacklist an address
+     */
     function addToBlacklist(address account) external onlyOwner {
         _isBlacklisted[account] = true;
     }
 
+    /**
+     * @notice used to unblacklist an address
+     */
     function removeFromBlacklist(address account) external onlyOwner {
         _isBlacklisted[account] = false;
     }
 
+    /**
+     * @notice used to exclude address from paying fees
+     */
     function excludeFromFee(address account) public onlyOwner {
         _isExcludedFromFee[account] = true;
     }
 
+    /**
+     * @notice used to include excluded account in paying fees
+     */
     function includeInFee(address account) public onlyOwner {
         _isExcludedFromFee[account] = false;
     }
 
+    /**
+     * @notice used to set a tax fee percentage which accounts will be charged for tranfers
+     */
     function setTaxFeePercent(uint256 taxFee) external onlyOwner {
         _taxFee = taxFee;
     }
 
+    /**
+     * @notice used to set a tax fee percentage which accounts will be charged for buying tokens
+     */
     function setBuyTaxFeeAndPercent(bool _enabled, uint256 taxFee) external onlyOwner {
         _enableBuyTaxFee = _enabled;
         _buyTaxFee = taxFee;
     }
 
+    /**
+     * @notice used to set a tax fee percentage which accounts will be charged for selling tokens
+     */
     function setSellTaxFeeAndPercent(bool _enabled, uint256 taxFee) external onlyOwner {
         _enableSellTaxFee = _enabled;
         _sellTaxFee = taxFee;
     }
 
+    /**
+     * @notice used to set a liquidity tax fee percentage
+     */
     function setLiquidityFeePercent(uint256 liquidityFee) external onlyOwner {
         _liquidityFee = liquidityFee;
     }
 
+    /**
+     * @notice used to set if buyback is enabled
+     */
     function setBuybackEnabled(bool _enabled) external onlyOwner() {
         _enableBuyback = _enabled;
     }
 
+    /**
+     * @notice used to set if buyback is enabled and other parameters required for buyback
+     */
     function setBuyback(
         bool _enabled,
         uint256 nativeTokenThreshold,
@@ -392,66 +467,105 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _buybackNativeTokenPercentage = nativeTokenPercentage;
     }
 
-    // sets max amount for a single transaction
+    /**
+     * @notice used to sets max amount for a single transaction
+     */
     function setMaxTxPercent(uint256 maxTxPercent) external onlyOwner {
         _maxTxAmount = _tTotal.mul(maxTxPercent).div(10**2);
     }
 
-    // set max amount a wallet is allowed to hold
+    /**
+     * @notice used to sets max amount a wallet is allowed to hold
+     */
     function setMaxHoldingPercent(uint256 maxHoldingPercent) external onlyOwner {
         _maxHoldingAllowed = _tTotal.mul(maxHoldingPercent).div(10**2);
     }
 
+    /**
+     * @notice used to set if liquidity is enabled
+     */
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner {
         _enableLiquidity = _enabled;
         emit SwapAndLiquifyEnabledUpdated(_enabled);
     }
 
+    /**
+     * @notice used to pause transactions
+     */
     function pause() external onlyOwner {
         _pause();
     }
 
+    /**
+     * @notice used to unpause transactions
+     */
     function unpause() external onlyOwner {
         _unpause();
     }
 
+    /**
+     * @notice used to set threshold that contract tokens must be greater than before providing liquidity
+     */
     function setTokenSwapThreshold(uint256 tokenSwapThreshold) external onlyOwner() {
         _tokenSwapThreshold = tokenSwapThreshold;
     }
 
+    /**
+     * @notice used to set marketing wallet address
+     */
     function setMarketingAddress(bool _enabled, address marketingAddress) external onlyOwner() {
         _enableMarketingAddress = _enabled;
         _marketingAddress = payable(marketingAddress);
     }
 
+    /**
+     * @notice used to set development wallet address
+     */
     function setDevelopmentAddress(bool _enabled, address developmentAddress) external onlyOwner() {
         _enableDevelopmentAddress = _enabled;
         _developmentAddress = payable(developmentAddress);
     }
 
+    /**
+     * @notice used to set charity wallet address
+     */
     function setCharityAddress(bool _enabled, address charityAddress) external onlyOwner() {
         _enableCharityAddress = _enabled;
         _charityAddress = payable(charityAddress);
     }
 
+    /**
+     * @notice used to set product wallet address
+     */
     function setProductAddress(bool _enabled, address productAddress) external onlyOwner() {
         _enableProductAddress = _enabled;
         _productAddress = payable(productAddress);
     }
 
+    /**
+     * @notice used to set if liquidity is enabled
+     */
     function setLiquidity(bool isLiquidity) external onlyOwner() {
         _enableLiquidity = isLiquidity;
     }
 
-    //to recieve ETH from uniswapV2Router when swaping
+    /**
+     * @notice to recieve ETH from uniswapV2Router when swaping
+     */
     receive() external payable {}
 
+    /**
+     * @notice used to deduct the necessary fees from the account
+     */
     function _reflectFee(uint256 rFee, uint256 tFee) private {
         _rTotal = _rTotal.sub(rFee);
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
-    // returns reflection amount, reflection amount after reflection fee deduction, reflection fee, token transfer amount after fees, tax fee, liquidity fee
+    /**
+     * @return reflection amount, reflection amount after reflection fee deduction,
+     *         reflection fee, token transfer amount after fees, tax fee, liquidity fee
+     */
     function _getValues(uint256 tAmount)
         private
         view
@@ -485,7 +599,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         );
     }
 
-    // returns the token transfer amount after fees, tax fee, liquidity fee for a given transfer amount
+    /**
+     * @return the token transfer amount after fees, tax fee, liquidity fee for a given transfer amount
+     */
     function _getTValues(uint256 tAmount)
         private
         view
@@ -501,7 +617,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return (tTransferAmount, tFee, tLiquidity);
     }
 
-    // returns the reflection amount, reflection amount after reflection fee deduction, reflection fee for a given transfer amount
+    /**
+     * @return the reflection amount, reflection amount after reflection fee deduction, reflection fee for a given transfer amount
+     */
     function _getRValues(
         uint256 tAmount,
         uint256 tFee,
@@ -523,13 +641,17 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return (rAmount, rTransferAmount, rFee);
     }
 
-    // gets the rate used to convert t-space tokens to r-space tokens and vice versa
+    /**
+     * @notice used to get the rate used to convert t-space tokens to r-space tokens and vice versa
+     */
     function _getRate() private view returns (uint256) {
         (uint256 rSupply, uint256 tSupply) = _getCurrentSupply();
         return rSupply.div(tSupply);
     }
 
-    // get the current reflection and token supply
+    /**
+     * @notice get the current reflection and token supply
+     */
     function _getCurrentSupply() private view returns (uint256, uint256) {
         uint256 rSupply = _rTotal;
         uint256 tSupply = _tTotal;
@@ -545,7 +667,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return (rSupply, tSupply);
     }
 
-    // adds liquidity
+    /**
+     * @notice Collects liquidity tax
+     */
     function _takeLiquidity(uint256 tLiquidity) private {
         uint256 currentRate = _getRate();
         uint256 rLiquidity = tLiquidity.mul(currentRate);
@@ -554,10 +678,16 @@ contract Token is Context, IERC20, Ownable, Pausable {
             _tOwned[address(this)] = _tOwned[address(this)].add(tLiquidity);
     }
 
+    /**
+     * @notice calculates tax fee on a given amount
+     */
     function calculateTaxFee(uint256 _amount) private view returns (uint256) {
         return _amount.mul(_taxFee).div(10**2);
     }
 
+    /**
+     * @notice calculates liquidity fee on a given amount
+     */
     function calculateLiquidityFee(uint256 _amount)
         private
         view
@@ -566,6 +696,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         return _amount.mul(_liquidityFee).div(10**2);
     }
 
+    /**
+     * @notice removes fees on the contract
+     */
     function removeAllFee() private {
         if (_taxFee == 0 && _liquidityFee == 0) return;
 
@@ -576,15 +709,24 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _liquidityFee = 0;
     }
 
+    /**
+     * @notice restores fees on the contract
+     */
     function restoreAllFee() private {
         _taxFee = _previousTaxFee;
         _liquidityFee = _previousLiquidityFee;
     }
 
+    /**
+     * @notice checks if the address is excluded from the tax fee
+     */
     function isExcludedFromFee(address account) public view returns (bool) {
         return _isExcludedFromFee[account];
     }
 
+    /**
+     * @notice approves a spender to send owners token
+     */
     function _approve(
         address owner,
         address spender,
@@ -597,21 +739,27 @@ contract Token is Context, IERC20, Ownable, Pausable {
         emit Approval(owner, spender, amount);
     }
 
-    // Transfer to pair from non-router address is a sell swap
+    /**
+     * @notice Transfer to pair from non-router address is a sell swap
+     */
     function _isSell(address sender, address recipient) internal view returns (bool) {
         return sender != address(uniswapV2Router) && recipient == address(uniswapV2Pair);
     }
 
-    // Transfer from pair is a buy swap
+    /**
+     * @notice Transfer from pair is a buy swap
+     */
     function _isBuy(address sender) internal view returns (bool) {
         return sender == address(uniswapV2Pair);
     }
 
-    // internal transfer function used by transfer and transferFrom
-    // checks if contract has been paused
-    // checks if sender or recipient is blacklisted
-    // checks that recipient is not a whale
-    // checks that the transaction amount doesn't exceed the maximum allowed
+    /**
+     * @notice Internal transfer function used by transfer and transferFrom
+     *         checks if contract has been paused
+     *         checks if sender or recipient is blacklisted
+     *         checks that recipient is not a whale
+     *         checks that the transaction amount doesn't exceed the maximum allowed
+     */
     function _transfer(
         address from,
         address to,
@@ -694,14 +842,18 @@ contract Token is Context, IERC20, Ownable, Pausable {
         }
     }
 
-    // Buys tokens using the contract balance
+    /**
+     * @notice Buys tokens using the contract balance
+     */
     function buyBackTokens(uint256 amount) private lockTheSwap {
     	if (amount > 0) {
     	    swapNativeTokenForTokens(amount);
 	    }
     }
 
-    // Swaps Native Token for tokens and immedietely burns them
+    /**
+     * @notice Swaps Native Token for tokens and immedietely burns them
+     */
     function swapNativeTokenForTokens(uint256 amount) private {
         // generate the uniswap pair path of token -> weth
         address[] memory path = new address[](2);
@@ -716,6 +868,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         );
     }
 
+    /**
+     * @notice Swaps Token for Native token and adds liquidity to uniswap
+     */
     function swapAndLiquify(uint256 contractTokenBalance) private lockTheSwap {
         // Split the contract balance into the swap portion and the liquidity portion
         uint256 sixth = contractTokenBalance.div(6); // 1/6 of the tokens, used for liquidity
@@ -753,6 +908,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         emit SwapAndLiquify(swapAmount, recievedTokens, sixth);
     }
 
+    /**
+     * @notice swaps token for Native Token
+     */
     function swapTokensForNativeToken(uint256 tokenAmount) private {
         // generate the uniswap pair path of token -> weth
         address[] memory path = new address[](2);
@@ -771,6 +929,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         );
     }
 
+    /**
+     * @notice adds liquidity to uniswap
+     */
     function addLiquidity(uint256 tokenAmount, uint256 nativeTokenAmount) private {
         // approve token transfer to cover all possible scenarios
         _approve(address(this), address(uniswapV2Router), tokenAmount);
@@ -786,7 +947,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         );
     }
 
-    //this method is responsible for taking all fee, if takeFee is true
+    /**
+     * @notice private function to transfer tokens between different accounts
+     */
     function _tokenTransfer(
         address sender,
         address recipient,
@@ -810,7 +973,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         if (!takeFee) restoreAllFee();
     }
 
-    // a transfer when sender and recipient are not excluded from rewards
+    /**
+     * @notice a transfer when sender and recipient are not excluded from rewards
+     */
     function _transferStandard(
         address sender,
         address recipient,
@@ -831,7 +996,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
-    // transfer when recipient is excluded from rewards
+    /**
+     * @notice transfer when recipient is excluded from rewards
+     */
     function _transferToExcluded(
         address sender,
         address recipient,
@@ -853,7 +1020,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
-    // transfer when sender is excluded from rewards
+    /**
+     * @notice transfer when sender is excluded from rewards
+     */
     function _transferFromExcluded(
         address sender,
         address recipient,
@@ -875,7 +1044,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
-    // transfer when both sender and recipient are excluded from rewards
+    /**
+     * @notice transfer when both sender and recipient are excluded from rewards
+     */
     function _transferBothExcluded(
         address sender,
         address recipient,

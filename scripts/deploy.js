@@ -14,7 +14,13 @@ async function main() {
   // await hre.run('compile');
 
   const [deployer] = await ethers.getSigners();
-  const UNISWAP_ROUTER = "0x7a250d5630b4cf539739df2c5dacb4c659f2488d";
+  const UNISWAP_ROUTER = {
+    ETH: 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D, // (ETH) ETHEREUM CHAIN UNISWAP
+    POL: 0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff, // (POL) POLYGON CHAIN QUICKSWAP
+    BSC: 0x10ED43C718714eb63d5aA57B78B54704E256024E, // (BSC) BINANCE CHAIN PANCAKESWAP
+    FANTOM: 0xF491e7B69E4244ad4002BC14e878a34207E38c29 // (FANTOM) AVAX NETWORK PANGOLIN EXCHANGE
+  }
+
 
   console.log("Deploying contracts with the account:", deployer.address);
 
@@ -27,7 +33,7 @@ async function main() {
   await factory.deployed();
   console.log("Factory deployed to:", factory.address);
 
-  const tokenBytecode = await factory.getBytecode("Defido", "DEFIDO", "9", "5", "5", "1000000000", UNISWAP_ROUTER);
+  const tokenBytecode = await factory.getBytecode("Defido Coin", "BASE", "9", "5", "5", "1000000000", UNISWAP_ROUTER.ETH); //Change your router address based on the chain you are using. BSC = Binance, POL = Polygon etc
   const tokenAddress = await factory.getAddress(tokenBytecode);
   console.log('Token to be deployed to:', tokenAddress);
 
