@@ -63,6 +63,16 @@ set up ACCOUNT_PRIVATE_KEY in hardhat.config.js using an account with no existin
 
 ## Blockchains Supported
 
+This contract can support any EVM compliant chain, where the swap is also a Uniswap V2 copy. We currently do not support Uniswap V3 or other swaps.
+
+- Polygon
+- Ethereum
+- Binance Smart Chain
+
+## Bridge Support
+
+Currently the bridge can support: (More are coming soon) There is no need to signup, or pay a fee, this is the worlds first permissionless bridge!
+
 - Polygon
 - Ethereum
 - Binance Smart Chain
