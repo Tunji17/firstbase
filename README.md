@@ -13,9 +13,10 @@
 - [ ] Test deployments with verified working components for each above task
 - [ ] Successful live chain deployment with verified ABI on each chain
 
-### NEXT STEPS:
+### Next main target:
 - [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid
 
+### Main features:
 
 - Reflections
 - Support for Marketing, Charity, Dev & other wallets (Auto converted into the native token, such as MATIC, ETH, BNB etc)
