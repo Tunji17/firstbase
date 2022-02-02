@@ -16,7 +16,7 @@ We see token launchers as a tool for deep lock in, we see the need for something
 
 ## Why did Defido Coin make this?
 
-We wanted a contract that gave us the ability to turn on or off the features we wanted, and most of the features we wanted, we could find repeated in many other contracts, but the developers would write the same thing, 1000 times.
+We find solidity contracts to be complex, and so do others, we wanted to create a contract that even a non programmer could understand or deploy. In the spirit of true decentralised finance. We wanted a contract that gave us the ability to turn on or off the features we wanted, and most of the features we wanted, we could find repeated in many other contracts. But they were not OSS.
 
 ## What are the main features?
 
