@@ -1,6 +1,5 @@
 # Defido Coin - Contract for good
-## This contract is provided free for any project, regardless of your financial purpose. 
-### The only requirement is, the contract stays MIT licensed & make a note to defido.com, Defido Coin & other source code contributors.
+## This contract is provided free for any project, regardless of your financial purpose. We have chosen the MIT license. Referencing defido.com, Defido Coin, Safemoon and other projects to which this code base may have come from, would be greatly appreciated!
 
 ## What is the mission?
 
