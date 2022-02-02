@@ -19,12 +19,12 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 
 ## What are the main features?
 
-- [x] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant)
+- [ ] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant) - Needs infura change
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 - [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
 - [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
 - [ ] Reflections (NATIVE TOKEN)
-- [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER)
+- [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER) - Needs %'s to be seperated for each tax
 - [x] Exclude / include a wallet from taxes/rewards
 - [x] Exclude a wallet from fees
 - [x] Blacklist / whitelist a wallet
