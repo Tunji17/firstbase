@@ -2,9 +2,23 @@
 ## This contract is provided free for any project, regardless of your financial purpose. 
 ### The only requirement is, the contract stays MIT licensed & make a note to defido.com, Defido Coin & other source code contributors.
 
+## What is the mission?
+
+Provide a free open source contract that covers 90% of the use cases projects require, whilst making it extremely simple to use for a beginner.
+
 ## Who is this for? 
 
-Crypto novices, non technical founders, developers who are helping the previous two listed, or developers who want a starting point. It is supposed to give enough of what most users would need. As well as giving advanced features that are not common in contracts, such as single contract address deployment & the worlds first integrated permissionless bridge. 
+Crypto novices, non technical founders, beginner developers, developers who are helping the previous three listed, or developers who want a starting point. It is supposed to give enough of what most users would need. As well as giving advanced features that are not common in contracts, such as single contract address deployment & the worlds first integrated permissionless bridge. 
+
+## Why make this free and OSS?
+
+We see token launchers as a tool for deep lock in, we see the need for something that covers 90% of the use cases that users will have, a single contract to offer most of the needs, although currently this contract does not cover that, we hope to keep expanding the Defido Coin - Contract for good to cover the 90%
+
+## Why did Defido Coin make this?
+
+We wanted a contract that gave us the ability to turn on or off the features we wanted, and most of the features we wanted, we could find repeated in many other contracts, but the developers would write the same thing, 1000 times.
+
+## What are the main features?
 
 - [x] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant)
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
@@ -24,7 +38,7 @@ Crypto novices, non technical founders, developers who are helping the previous 
 ### Next main target:
 - [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid
 
-### Main features:
+### Main features extended:
 
 - Reflections
 - Support for Marketing, Charity, Dev & other wallets (Auto converted into the native token, such as MATIC, ETH, BNB etc)
@@ -37,9 +51,7 @@ Crypto novices, non technical founders, developers who are helping the previous 
 - Blacklist a wallet from owning a token & receiving reflections
 - Pause the contract incase of emergency
 
-
-
-# DefidoContractForGood
+# Instructions section:
 
 Try running some of the following tasks:
 
