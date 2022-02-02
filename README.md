@@ -21,7 +21,7 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 
 - [x] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant)
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
-- [x] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
+- [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
 - [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
 - [ ] Reflections (NATIVE TOKEN)
 - [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER)
