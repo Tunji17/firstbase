@@ -46,7 +46,7 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 - Auto liquidity tax (Also converted into native token & put into a liquidity pool)
 - Anti whale maximum holding amounts (Stop bots & whales buying lots for little at the start, you can exclude a team wallet or charity wallet from limits)
 - Different taxes for buy & sell
-- Multiple chain, single contract (Similar to EverRise, setup on BSC/ETH/POL/AVAX & many more ERC20 compliant chains with a single contract address!)
+- Multiple chain, single contract (Similar to EverRise, setup on BSC/ETH/POL/FANTOM & many more ERC20 compliant chains with a single contract address!) as long as they support UNISWAP V2 and are the same as the EVM/ERC20, then this contract should work.
 - Whitelist addresses from taxes/reflections (Don't tax a certain wallet or don't reward a certain wallet)
 - Blacklist a wallet from owning a token & receiving reflections
 - Pause the contract incase of emergency
