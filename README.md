@@ -76,7 +76,21 @@ set correct UNISWAP_ROUTER in deploy.js
 npx hardhat run scripts/deploy.js --network <config name from hardhat.config.js>
 ```
 
-Copy token address from console
-Copy ABI from `artifacts/contracts/Token.sol/Token.json`
+## Contributing
 
-Head over [here](https://oneclickdapp.com/) for a UI to interact with the token
+Feature requests: 
+
+If there is a particular feature you want to see in this contract, you have two options, code the implementation yourself & use on your own contract, code the implementation to our standards of beginner use. 
+
+Bug reporting:
+
+Please email info@defido.com if you find a bug, don't openly disclose it.
+
+Complaints: 
+
+Please email info@defido.com 
+
+Code of conduct:
+
+Openly accessible, freely available, regardless of any requirement. This contract is for anyone, place nice, be nice, remember although Defido Coin is run by a dog, you're likely still talking to a human.
+
