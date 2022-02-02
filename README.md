@@ -1,3 +1,29 @@
+- [x] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant)
+- [x] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
+- [x] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
+- [x] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
+- [x] Reflections (NATIVE TOKEN)
+- [x] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER)
+- [x] Exclude / include a wallet from taxes/rewards
+- [x] Exclude a wallet from fees
+- [x] Blacklist / whitelist a wallet
+- [x] Pausable
+- [x] Anti whale (Set max wallet %, exclude marketing, giveaway & other wallets)
+
+
+- Reflections
+- Support for Marketing, Charity, Dev & other wallets (Auto converted into the native token, such as MATIC, ETH, BNB etc)
+- Buy backs for manual burns (Also converted to the native token)
+- Auto liquidity tax (Also converted into native token & put into a liquidity pool)
+- Anti whale maximum holding amounts (Stop bots & whales buying lots for little at the start, you can exclude a team wallet or charity wallet from limits)
+- Different taxes for buy & sell
+- Multiple chain, single contract (Similar to EverRise, setup on BSC/ETH/POL/AVAX & many more ERC20 compliant chains with a single contract address!)
+- Whitelist addresses from taxes/reflections (Don't tax a certain wallet or don't reward a certain wallet)
+- Blacklist a wallet from owning a token & receiving reflections
+- Pause the contract incase of emergency
+
+
+
 # DefidoContractForGood
 
 Try running some of the following tasks:
