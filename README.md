@@ -1,3 +1,11 @@
+# Defido Coin - Contract for good
+## This contract is provided free for any project, regardless of your financial purpose. 
+### The only requirement is, the contract stays MIT licensed & make a note to defido.com, Defido Coin & other source code contributors.
+
+## Who is this for? 
+
+Crypto novices, non technical founders, developers who are helping the previous two listed, or developers who want a starting point. It is supposed to give enough of what most users would need. As well as giving advanced features that are not common in contracts, such as single contract address deployment & the worlds first integrated permissionless bridge. 
+
 - [x] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant)
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 - [x] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
