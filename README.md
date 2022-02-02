@@ -13,7 +13,7 @@
 - [ ] Test deployments with verified working components for each above task
 - [ ] Successful live chain deployment with verified ABI on each chain
 
-###NEXT STEPS:
+### NEXT STEPS:
 - [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid
 
 
