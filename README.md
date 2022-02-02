@@ -22,13 +22,13 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 - [x] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant)
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 - [x] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
-- [x] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
-- [x] Reflections (NATIVE TOKEN)
-- [x] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER)
+- [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
+- [ ] Reflections (NATIVE TOKEN)
+- [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER)
 - [x] Exclude / include a wallet from taxes/rewards
 - [x] Exclude a wallet from fees
 - [x] Blacklist / whitelist a wallet
-- [x] Pausable
+- [ ] Pausable
 - [x] Anti whale (Set max wallet %, exclude marketing, giveaway & other wallets)
 - [ ] Really basic documentation for novice users & non crypto users
 - [ ] Test deployments with verified working components for each above task
