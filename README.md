@@ -9,10 +9,12 @@
 - [x] Blacklist / whitelist a wallet
 - [x] Pausable
 - [x] Anti whale (Set max wallet %, exclude marketing, giveaway & other wallets)
-- [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid
 - [ ] Really basic documentation for novice users & non crypto users
 - [ ] Test deployments with verified working components for each above task
 - [ ] Successful live chain deployment with verified ABI on each chain
+
+###NEXT STEPS:
+- [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid
 
 
 - Reflections
