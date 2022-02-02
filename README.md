@@ -1,5 +1,5 @@
 # Defido Coin - Contract for good
-## This contract is provided free for any project, regardless of your financial purpose. We have chosen the MIT license. Referencing defido.com, Defido Coin, Safemoon and other projects to which this code base may have come from, would be greatly appreciated!
+## This contract is provided free for any project, regardless of your financial purpose. We have chosen the MIT license. Referencing defido.com, Defido Coin, Safemoon & other projects to which this code base may have come from, would be greatly appreciated!
 
 ## What is the mission?
 
@@ -76,11 +76,15 @@ set correct UNISWAP_ROUTER in deploy.js
 npx hardhat run scripts/deploy.js --network <config name from hardhat.config.js>
 ```
 
+## License 
+
+MIT, free to use, in commercial or non commercial purposes.
+
 ## Contributing
 
 Feature requests: 
 
-If there is a particular feature you want to see in this contract, you have two options, code the implementation yourself & use on your own contract, code the implementation to our standards of beginner use. 
+If there is a particular feature you want to see in this contract, you have two options, code the implementation yourself & use on your own contract, code the implementation to our standards of beginner use and request a merge. 
 
 Bug reporting:
 
@@ -88,9 +92,10 @@ Please email info@defido.com if you find a bug, don't openly disclose it.
 
 Complaints: 
 
-Please email info@defido.com 
+Please email info@defido.com if you have a complaint.
 
 Code of conduct:
 
 Openly accessible, freely available, regardless of any requirement. This contract is for anyone, place nice, be nice, remember although Defido Coin is run by a dog, you're likely still talking to a human.
+
 
