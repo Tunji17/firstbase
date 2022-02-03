@@ -19,12 +19,12 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 
 ## What are the main features?
 
-- [ ] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant) - Needs infura change
+- [ ] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant) - Needs infura change to Moralis RPC or other multi chain RPC
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
-- [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB)
-- [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
-- [ ] Reflections (NATIVE TOKEN)
-- [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER) - Needs %'s to be seperated for each tax
+- [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB) automatically
+- [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB) (Different % for buy & sell)
+- [ ] Reflections (NATIVE TOKEN) - Same as Baby Doge/Safemoon
+- [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER) - Needs %'s to be seperated for each tax - See https://cliffordinu.io/ contract
 - [x] Exclude / include a wallet from taxes/rewards
 - [x] Exclude a wallet from fees
 - [x] Blacklist / whitelist a wallet
@@ -35,7 +35,7 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 - [ ] Successful live chain deployment with verified ABI on each chain
 
 ### Next main target:
-- [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid
+- [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid - Being done by other contributor
 
 ### Main features extended:
 
