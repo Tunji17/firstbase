@@ -106,6 +106,6 @@ Please email info@defido.com if you have a complaint.
 
 Code of conduct:
 
-Openly accessible, freely available, regardless of any requirement. This contract is for anyone, place nice, be nice, remember although Defido Coin is run by a dog, you're likely still talking to a human.
+Openly accessible, freely available, regardless of any requirement. This contract is for anyone, play nice, be nice, remember although Defido Coin is run by a dog, you're likely still talking to a human.
 
 
