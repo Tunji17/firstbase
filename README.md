@@ -56,6 +56,8 @@ Try running some of the following tasks:
 
 ## Prerequisites
 
+These are not valid, RPC needs changing for multi chain.
+
 ```shell
 set up correct RPC_API in hardhat.config.js
 set up ACCOUNT_PRIVATE_KEY in hardhat.config.js using an account with no existing transactions
