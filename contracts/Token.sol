@@ -13,6 +13,19 @@ import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
 
+interface ICrossChainBridgeERC20LiquidityManager {
+    function addLiquidityERC20(IERC20 token, uint256 amount) external;
+    function withdrawLiquidityERC20(IERC20 token, uint256 amount) external;
+    function lpTokens(address spender) external returns (bool exists, IERC20 token);
+
+}
+
+interface ILiquidityMiningPools {
+    function stake(address tokenAddress, uint256 amount) external;
+    function unstake(address tokenAddress, uint256 amount) external;
+    function harvest(address tokenAddress, address stakerAddress) external;
+}
+
 // To Understand this contract, please refer to the following links: https://reflect-contract-doc.netlify.app/
 contract Token is Context, IERC20, Ownable, Pausable {
     using SafeMath for uint256;
@@ -85,6 +98,10 @@ contract Token is Context, IERC20, Ownable, Pausable {
     // uniswap v2 pair contract address
     address public immutable uniswapV2Pair;
 
+    // CrossChainBridge liquidity manager contract
+    ICrossChainBridgeERC20LiquidityManager public immutable ccbLiquidityManager;
+    ILiquidityMiningPools public immutable ccbLiquidityMiningPools;
+
     bool currentlySwapping;
     bool public _enableLiquidity = true;
 
@@ -137,7 +154,9 @@ contract Token is Context, IERC20, Ownable, Pausable {
         uint256 taxFee_,
         uint256 liquidityFee_,
         uint256 totalSupply_,
-        address _router
+        address _router,
+        ICrossChainBridgeERC20LiquidityManager _ccbLiquidityManager,
+        ILiquidityMiningPools _liquidityMiningPools
     ) {
 
         // Instantiate variables
@@ -159,12 +178,17 @@ contract Token is Context, IERC20, Ownable, Pausable {
 
         // sets uniswap router contract
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(_router);
+
         // Create a uniswap pair for this new token
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
             .createPair(address(this), _uniswapV2Router.WETH());
 
         // set the rest of the contract variables
         uniswapV2Router = _uniswapV2Router;
+
+        // sets cross-chain bridge contracts
+        ccbLiquidityManager = _ccbLiquidityManager;
+        ccbLiquidityMiningPools = _liquidityMiningPools;
 
         //exclude owner and this contract from fee
         _isExcludedFromFee[owner()] = true;
@@ -1068,4 +1092,102 @@ contract Token is Context, IERC20, Ownable, Pausable {
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
+
+
+    /**
+     * @notice adds ERC20 liquidity to cross-chain bridge (www.crosschainbridge.org)
+     *
+     * for more info about this bridge please go to https://docs.crosschainbridge.org/cross-chain-bridge/
+     */
+    function addERC20LiquidityToCrossChainBridge(
+        uint256 amount
+    ) external {        // TODO: should this function be external or internal? onlyOwner or public?
+
+        // make sure that liquidity manager is excluded from fee, otherwise transaction will fail
+        // TODO: check if this is correct
+        require(_isExcludedFromFee[address(ccbLiquidityManager)], "Token: exclude CCB liquidity manager from fee first");
+
+        // increase allowance for ccb liquidity manager to pull ERC20 tokens from caller's address
+        increaseAllowance(address(ccbLiquidityManager), amount);
+
+        // add ERC20 _liquidity to cross-chain bridge
+        ccbLiquidityManager.addLiquidityERC20(IERC20(address(this)), amount);
+
+        // TODO: NOTICE TO DEV TEAM
+        // - once the step above is done, liquidity is added to the bridge
+        // - could consider to throw an event here
+        // - could consider add the LP tokens to the liquidity mining pool to earn passive income from bridging fees
+    }
+
+    /**
+     * @notice withdraws ERC20 liquidity from cross-chain bridge (www.crosschainbridge.org)
+     *
+     * for more info about this bridge please go to https://docs.crosschainbridge.org/cross-chain-bridge/
+     */
+    function withdrawERC20LiquidityFromCrossChainBridge(
+        uint256 amount
+    ) external {        // TODO: should this function be external or internal? onlyOwner or public?
+        // withdraw ERC20 _liquidity from cross-chain bridge
+        ccbLiquidityManager.withdrawLiquidityERC20(IERC20(address(this)), amount);
+
+        // TODO: NOTICE TO DEV TEAM
+        // - could consider to throw an event here
+    }
+
+    /**
+     * @notice stakes liquidity provider (LP) tokens in cross-chain bridge liquidity manager to earn passive income
+     *         from bridging fees
+     *
+     * for more info about this bridge please go to https://docs.crosschainbridge.org/cross-chain-bridge/
+     */
+    function stakeLpTokensInCCBLiquidityMiningPools(
+        uint256 amount
+    ) external {        // TODO: should this function be external or internal? onlyOwner or public?
+
+        // get LP token address for this token
+        (bool exists, IERC20 lpToken) = ccbLiquidityManager.lpTokens(address(this));
+        require(exists, "Token: add liquidity to liquidity manager first to create an LP token ");
+
+        // approve LiquidityMiningPools contract to pull lp token
+        //TODO: some tokens revert when adding approval on existing approval. We could consider to use SafeERC20 here (but costs gas)?
+        lpToken.approve(address(ccbLiquidityMiningPools), 0);
+        lpToken.approve(address(ccbLiquidityMiningPools), amount);
+
+        // stake LP token in LiquidityMiningPools contract
+        ccbLiquidityMiningPools.stake(address(this), amount);
+
+        // TODO: NOTICE TO DEV TEAM
+        // - could consider to throw an event here
+    }
+
+    /**
+ * @notice withdraws ERC20 liquidity from cross-chain bridge (www.crosschainbridge.org)
+ *
+ * for more info about this bridge please go to https://docs.crosschainbridge.org/cross-chain-bridge/
+ */
+    function unstakeLPTokensFromCCBLiquidityMiningPools(
+        uint256 amount
+    ) external {        // TODO: should this function be external or internal? onlyOwner or public?
+        // withdraw ERC20 _liquidity from cross-chain bridge
+        ccbLiquidityMiningPools.unstake(address(this), amount);
+
+        // TODO: NOTICE TO DEV TEAM
+        // - could consider to throw an event here
+    }
+
+    /**
+     * @notice harvests rewards earned from cross-chain bridge fees (www.crosschainbridge.org)
+     *
+     * for more info about this bridge please go to https://docs.crosschainbridge.org/cross-chain-bridge/
+     */
+    function harvestRewardsFromCCBLiquidityMiningPools(
+    ) external {        // TODO: should this function be external or internal? onlyOwner or public?
+        // withdraw ERC20 _liquidity from cross-chain bridge
+        ccbLiquidityMiningPools.harvest(address(this), _msgSender());
+
+        // TODO: NOTICE TO DEV TEAM
+        // - could consider to throw an event here
+    }
 }
+
+
