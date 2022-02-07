@@ -37,6 +37,10 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 ### Next main target:
 - [ ] Permissionless bridge, with auto liquidity taxes to keep bridge chain pools liquid - Being done by other contributor
 
+### Future targets:
+- [ ] Upgrade contract via proxy
+
+
 ### Main features extended:
 
 - Reflections
