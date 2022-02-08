@@ -6,7 +6,7 @@
 
 
 > Needs infura change to Moralis RPC or other multi chain RPC.
-</br>
+
 > Uses the CREATE2 FACTORY in 'factory.sol'
 
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
