@@ -6,12 +6,13 @@
 
 
 > Needs infura change to Moralis RPC or other multi chain RPC.
+</br>
 > Uses the CREATE2 FACTORY in 'factory.sol'
 
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 
-*We just top up a wallet with the native coin, ETH/MATIC/BNB at the $1000 or near mark, and then use that manually to burn the token & burn it.*
-*This also has a setting where a % of every buy/sell & transfer simply sends tokens to the burn wallet*
+> We just top up a wallet with the native coin, ETH/MATIC/BNB at the $1000 or near mark, and then use that manually to burn the token & burn it.
+> This also has a setting where a % of every buy/sell & transfer simply sends tokens to the burn wallet
 
 - [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB) automatically
 
