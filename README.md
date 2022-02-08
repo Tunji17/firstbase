@@ -3,8 +3,10 @@
 ## What are the main features?
 
 - [ ] Same contract address deployment across multiple EVM chains (ETH/BSC/POL/EVM compliant) 
-*Needs infura change to Moralis RPC or other multi chain RPC.
-*Uses the CREATE2 FACTORY in 'factory.sol'
+
+
+>> Needs infura change to Moralis RPC or other multi chain RPC.
+>> Uses the CREATE2 FACTORY in 'factory.sol'
 
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 
