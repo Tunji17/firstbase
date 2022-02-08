@@ -23,7 +23,7 @@ We find solidity contracts to be complex, and so do others, we wanted to create 
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 - [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB) automatically
 - [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB) (Different % for buy & sell)
-- [ ] Reflections (NATIVE TOKEN) - Same as Baby Doge/Safemoon
+- [ ] Reflections, auto distribute of token (NATIVE TOKEN) - Same as Baby Doge/Safemoon
 - [ ] Buy / sell fee (DIFFERENT % ON BUY/SELL/TRANSFER) - Needs %'s to be seperated for each tax - See https://cliffordinu.io/ contract
 - [x] Exclude / include a wallet from taxes/rewards
 - [x] Exclude a wallet from fees
