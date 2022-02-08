@@ -7,15 +7,20 @@
 *Uses the CREATE2 FACTORY in 'factory.sol'
 
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
-*We just top up a wallet with the native coin, ETH/MATIC/BNB at the $1000 or near mark, and then use that manually to burn the token & burn it.
-*This also has a setting where a % of every buy/sell & transfer simply sends tokens to the burn wallet
+
+*We just top up a wallet with the native coin, ETH/MATIC/BNB at the $1000 or near mark, and then use that manually to burn the token & burn it.*
+*This also has a setting where a % of every buy/sell & transfer simply sends tokens to the burn wallet*
 
 - [ ] Liquidity Tax increases liquidity supply (MATIC/ETH/BNB) automatically
-*We top up the liquidity pool after pooling $1000USD+ of native coin, we then pair it with ETH/TOKEN for example, or MATIC/TOKEN.
+
+
+*We top up the liquidity pool after pooling $1000USD+ of native coin, we then pair it with ETH/TOKEN for example, or MATIC/TOKEN.*
 
 - [ ] Project/Charity/Development Wallets Tax (MATIC/ETH/BNB)
-*There are 4 main wallets, project, charity, development & marketing. All these wallets should be able to set different % of taxes for buy, sell and transfer.
-*These wallets are used to help teams fund the projects
+
+
+*There are 4 main wallets, project, charity, development & marketing. All these wallets should be able to set different % of taxes for buy, sell and transfer.*
+*These wallets are used to help teams fund the projects*
 
 - [ ] Reflections, auto distribute of token (NATIVE TOKEN)
 *This is an auto redistribution or reflections, similar to Baby Doge or Safemoon. 
