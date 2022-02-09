@@ -9,6 +9,7 @@ Go multi chain from the first deploy, firstbase is an MIT licensed open source c
 Each piece of the contract must have chooseable taxes, turn on or off the parts you want or need
 
 Example:
+
 Wallet taxes, on or off
 
 Reflections, on or off
