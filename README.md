@@ -25,7 +25,11 @@
 
 - [ ] Manually BURN Buy Back Tax, pool funds (ETH/MATIC/BNB) and use to buy liquidity or burn the purchased tokens (MATIC)
 
-> We just top up a wallet with the native coin, ETH/MATIC/BNB at the $1000 or near mark, and then use that manually to burn the token & burn it.
+> We just top up a wallet with the native chain coin ETH/MATIC/BNB, and then the user can manually buy the token at the swap & transfer to burn or liquidity.
+
+- [ ] AUTO BURN
+
+> We send reflections, or a % of each sale of the token to a dead wallet, reducing supply
 
 > This also has a setting where a % of every buy/sell & transfer simply sends tokens to the burn wallet
 
