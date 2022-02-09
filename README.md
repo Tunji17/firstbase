@@ -1,3 +1,8 @@
+# You've landed on firstbase
+
+## What is firstbase?
+
+Go multi chain from the first deploy, firstbase is an MIT licensed open source contract with advanced features, such as single contract address, taxation, multichain bridge integration, that can be used as a great starting platform for launching a multi chain token from day 1. firstbase is 'just enough' of all the things you want in a token made for non technical founders & projects to launch fast.
 
 
 ## What are the main features?
