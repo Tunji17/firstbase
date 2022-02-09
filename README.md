@@ -10,7 +10,9 @@ Each piece of the contract must have chooseable taxes, turn on or off the parts 
 
 Example:
 Wallet taxes, on or off
+
 Reflections, on or off
+
 Auto liquidity, on or off
 
 ## What are the main features?
