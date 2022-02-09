@@ -56,11 +56,11 @@ Go multi chain from the first deploy, firstbase is an MIT licensed open source c
 
 > There is different reflections based on the tax % of buy/sell and transfer taxes
 
-- [x] Exclude / include a wallet from taxes/rewards
+- [ ] Exclude / include a wallet from taxes/rewards
 
 > Exclude wallets from all taxes or rewards
 
-- [x] Blacklist / whitelist a wallet
+- [ ] Blacklist / whitelist a wallet
 
 > Stop a wallet from being able to hold or purchase the token
 
@@ -68,7 +68,15 @@ Go multi chain from the first deploy, firstbase is an MIT licensed open source c
 
 > Pause the contract in case of emergency
 
-- [x] Anti whale (Set max wallet %, exclude marketing, giveaway & other wallets)
+- [ ] Renounce ownership, transfer ownership etc
+
+> Renounce the ownership or transfer ownership to another owner
+
+- [ ] Open Zeppelin time lock security
+
+> Allow the owner to have time to stop improper actions
+
+- [ ] Anti whale (Set max wallet %, exclude marketing, giveaway & other wallets)
 
 > Set a maximum amount the holder can own in %
 
